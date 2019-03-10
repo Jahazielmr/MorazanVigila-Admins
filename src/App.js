@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import * as routes from './Constants/Routes';
 import LoginPage from "./Components/LoginPage";
 import MainPage from "./Components/MainPage";
+import NavBar from "./Components/NavBar";
+import TableD from "./Components/TableD";
 
 
 class App extends Component {
@@ -28,8 +30,17 @@ class App extends Component {
                   component={() => <MainPage />}
                 />
 
+                <Route
+                  exact path={routes.TABLED}
+                  component={() => <TableD />}
+                />
 
+                <Route
+                  exact path={routes.NAVBAR}
+                  component={() => <NavBar />}
+                />
 
+              
               </Switch>
 
             </div>
