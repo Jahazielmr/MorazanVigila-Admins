@@ -1,76 +1,92 @@
 import React, { Component } from 'react';
 import { Table, Divider, Tag } from 'antd';
+import fire from "../Constants/Firebase";
+import * as routes from '../Constants/Routes';
+import { Router, Route } from "react-router";
+import NavBar from "./NavBar";
+
 
 class TableD extends Component {
 
     constructor(props) {
         super(props);
 
+        this.state = {
+
+            data: [],
+        };
+
+
     }
 
+    componentDidMount() {
 
-
+        const database = fire.firestore();
+        const denunciasRef = database.collection("denuncias");
+        var data = [];
+        denunciasRef.get().then(snapshot => {
+            snapshot.forEach(element => {
+                var arrayDenuncia = [];
+                var arrayDenuncia1 = {   
+                    key: element.id, 
+                    denuncia: element.data().denuncia,
+                    anonimo: element.data().anonimo,
+                    descripcion: element.data().descripcion,
+                    afectados: element.data().afectados
+                }
+                const denuncianteRef = database.collection("users").doc(element.data().denunciante.id);
+                denuncianteRef.get().then(snapshot => {
+                    var arrayDenuncia2 = {
+                        denunciante: snapshot.data().primerNombre,
+                        contacto: snapshot.data().telefono,
+                    }
+                    arrayDenuncia = Object.assign(arrayDenuncia1, arrayDenuncia2)
+                    data.push(arrayDenuncia)
+                    console.log(data);
+                    this.setState({
+                        data: data
+                    })
+                }); 
+            });
+            
+        });
+    } 
+    
     render() {
 
         const columns = [{
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            render: text => <a href="javascript:;">{text}</a>,
+            title: 'Tipo de denuncia',
+            dataIndex: 'denuncia',
+        
         }, {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
+            title: 'anonimo',
+            dataIndex: 'anonimo',
         }, {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
+            title: 'denunciante',
+            dataIndex: 'denunciante',
         }, {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: tags => (
-                <span>
-                    {tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                        return <Tag color={color} key={tag}>{tag.toUpperCase()}</Tag>;
-                    })}
-                </span>
-            ),
+            title: 'descripcion',
+            dataIndex: 'descripcion',
         }, {
-            title: 'Action',
-            key: 'action',
-            render: (text, record) => (
-                <span>
-                    <a href="javascript:;">Invite {record.name}</a>
-                    <Divider type="vertical" />
-                    <a href="javascript:;">Delete</a>
-                </span>
-            ),
+            title: 'contacto',
+            dataIndex: 'contacto',
+        }, {
+            title: 'afectados',
+            dataIndex: 'afectados',
         }];
-
-        const data = [{
-            key: '1',
-            name: 'Vladimir Mamatov',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
-        }];
-
-
+        
+        
         return (
 
+            
+
             <div>
-                <Table columns={columns} dataSource={data} />
+               
+               
+                <Table columns={columns} dataSource={this.state.data} />
             </div>
         );
-
     }
-
 }
-
 
 export default TableD;

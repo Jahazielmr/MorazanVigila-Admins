@@ -7,6 +7,7 @@ import LoginPage from "./Components/LoginPage";
 import MainPage from "./Components/MainPage";
 import NavBar from "./Components/NavBar";
 import TableD from "./Components/TableD";
+import Mapa from "./Components/Mapa";
 
 
 class App extends Component {
@@ -38,6 +39,11 @@ class App extends Component {
                 <Route
                   exact path={routes.NAVBAR}
                   component={() => <NavBar />}
+                />
+
+                <Route
+                  exact path={routes.MAPA}
+                  component={() => <Mapa />}
                 />
 
               
